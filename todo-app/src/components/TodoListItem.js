@@ -1,15 +1,22 @@
 import React from 'react';
-import { MdCheckBoxOutlineBlank, MdRemoveCircleOutline } from 'react-icons/md';
+import { MdCheckBoxOutlineBlank, MdRemoveCircleOutline, MdCheckBox} from 'react-icons/md';
 import '../scss/TodoListItem.scss';
+import cn from 'classnames';
 
-const TodoListItem = ({todo, removeId}) => {
+const TodoListItem = ({todo, removeId, changeChecked}) => {
+  const {id, text, checked} = todo;
+
   return (
     <div className='TodoListItem'>
-        <div className='checkbox'>
-            <MdCheckBoxOutlineBlank/>
-            <div className='text'>{todo.text}</div>
+      {/**
+       * classnames 라이브러리를 이용해서 조건부 클래스명 적용
+       * todo객체의 checked 속성이 true일 경우에 속성명과 동일한 클래스명이 적용된다.
+       */}
+        <div className={cn('checkbox', {checked})} onClick={() => changeChecked(id)}>
+            {checked ? <MdCheckBox/> : <MdCheckBoxOutlineBlank/>}
+            <div className='text'>{text}</div>
         </div>
-        <div className='remove' onClick={() => removeId(todo.id)}>
+        <div className='remove' onClick={() => removeId(id)}>
             <MdRemoveCircleOutline/>
         </div>
     </div>

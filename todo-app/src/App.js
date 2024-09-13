@@ -2,6 +2,7 @@ import TodoInsert from "./components/TodoInsert";
 import TodoList from "./components/TodoList";
 import TodoTemplate from "./components/TodoTemplate";
 import {useState, useRef, useCallback} from 'react';
+import {produce} from "immer";
 
 function App() {
   const [todos, setTodos] = useState([
@@ -18,7 +19,7 @@ function App() {
     {
       id:3,
       text:'Spring Boot 공부하기',
-      checked: true
+      checked: false
     },
   ]);
 
@@ -41,23 +42,31 @@ function App() {
 
    const removeId = useCallback((id) => {
       setTodos(
-        todos.filter(todos => (todos.id !== id)) // 화살표함수, 람다식은 {} 열면 안에 return문 필요, () or 괄호 없는 경우는 바로 return되기 때문에 return문을 쓰지 않아도 된다. 
+        produce(
+          draft => draft.filter(todo => todo.id !== id) // 화살표함수, 람다식은 {} 열면 안에 return문 필요, () or 괄호 없는 경우는 바로 return되기 때문에 return문을 쓰지 않아도 된다. 
+        )
       );  
 
       console.log(todos[0].id);
    }, [todos]);
 
-   const checkedId = useCallback((id) => {
-      setTodos(
-        todos.map()
-      );
 
-   }, [todos])
+   const changedChecked = useCallback((id) => {
+    setTodos(
+      produce(
+        draft => draft.map(
+          todo => todo.id === id
+                  ? {...todo, checked: !todo.checked}
+                  : todo
+        )
+      )
+    )
+   }, [todos]);
 
   return (
     <TodoTemplate>
       <TodoInsert addTodo={addTodo}/>
-      <TodoList todos={todos} removeId={removeId}/>
+      <TodoList todos={todos} removeId={removeId} changedChecked={changedChecked}/>
     </TodoTemplate>
   );
 };
