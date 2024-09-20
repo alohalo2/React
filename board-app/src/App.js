@@ -9,6 +9,7 @@ import { persistStore } from 'redux-persist';
 import Login from './pages/Login';
 import Post from './pages/Post';
 import BoardList from './pages/BoardList';
+import Board from './pages/Board';
 
 function App() {
   const persiststore = persistStore(store);
@@ -23,6 +24,7 @@ function App() {
             <Route path='/login' element={<Login/>}/>
             <Route path='/post' element={<Post/>}/>
             <Route path='/board-list' element={<BoardList/>}/>
+            <Route path='/board/:id' element={<Board/>}/>
           </Route>
         </Routes>
       </PersistGate>

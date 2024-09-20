@@ -24,7 +24,7 @@ const boardSlice = createSlice({
 
             return {
                 ...state,
-                boards: action.payload,
+                boards: action.payload.pageItems,
                 searchCondition: 'all',
                 searchKeyword: '',
                 page: 0

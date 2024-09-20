@@ -12,7 +12,7 @@ export const post = createAsyncThunk(
                 }
             });
 
-            return response.data.items;
+            return response.data;
         } catch(e) {
             return thunkApi.rejectWithValue(e);
         }

@@ -132,7 +132,7 @@ const Post = () => {
 
         sendFormData.append('boardDto', boardDto);
 
-        Array.from(uploadFiles).forEach(file => sendFormData.append('uploardFiles', file));
+        Array.from(uploadFiles).forEach(file => sendFormData.append('uploadFiles', file));
 
         dispatch(post(sendFormData)).then((action) => {
             if(action.type === 'boards/post/fulfilled') {

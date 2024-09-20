@@ -45,11 +45,11 @@ const BoardListTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {boards.content && boards.content.map((board, index) => 
+                        {boards && boards.content && boards.content.map((board, index) => 
                             <TableRow key={index}> 
                                 <TableCell>{board.id}</TableCell>
                                 <TableCell>
-                                    <Link>{board.title}</Link>
+                                    <Link to={`/board/${board.id}`}>{board.title}</Link>
                                 </TableCell>
                                 <TableCell>{board.nickname}</TableCell>
                                 <TableCell>{board.regdate.substring(0, board.regdate.indexOf('T'))}</TableCell>

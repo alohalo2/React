@@ -3,7 +3,6 @@ package com.bit.boardappbackend.controller;
 import com.bit.boardappbackend.dto.BoardDto;
 import com.bit.boardappbackend.dto.ResponseDto;
 import com.bit.boardappbackend.entity.CustomUserDetails;
-import com.bit.boardappbackend.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,9 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.bit.boardappbackend.service.BoardService;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/boards")
@@ -80,19 +80,80 @@ public class BoardController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable("id") Long id) {
+        ResponseDto<BoardDto> responseDto = new ResponseDto<>();
 
+        try {
+            log.info("findById id: {}", id);
+            BoardDto boardDto = boardService.findById(id);
 
+            responseDto.setItem(boardDto);
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
 
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            log.error("findById error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable("id") Long id){
+        ResponseDto<BoardDto> responseDto = new ResponseDto<>();
 
+        try {
+            log.info("deleteById id: {}", id);
+            boardService.deleteById(id);
 
+            responseDto.setStatusCode(HttpStatus.NO_CONTENT.value());
+            responseDto.setStatusMessage("no content");
 
+            return ResponseEntity.ok(responseDto); // ok로 보내는 이유: no content로 보내면 body를 만들 수 없기 때문에 responseDto를 담지 못한다.
+        } catch (Exception e) {
+            log.error("deleteById error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
 
+    @PatchMapping
+    public ResponseEntity<?> modify(@RequestPart("boardDto") BoardDto boardDto,
+                                    @RequestPart(value = "uploadFiles", required = false) MultipartFile[] uploadFiles,
+                                    @RequestPart(value = "changeFiles", required = false) MultipartFile[] changeFiles,
+                                    @RequestPart(value = "originFiles", required = false) String originFiles,
+                                    @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        ResponseDto<BoardDto> responseDto = new ResponseDto<>();
 
+        try {
+            log.info("modify boardDto: {}", boardDto);
 
+            if(uploadFiles != null && uploadFiles.length > 0)
+                Arrays.stream(uploadFiles).forEach(file -> log.info("modify uploadFiles: {}", file.getOriginalFilename()));
+            if(uploadFiles != null && uploadFiles.length > 0)
+                Arrays.stream(changeFiles).forEach(file -> log.info("modify changeFiles: {}", file.getOriginalFilename()));
 
+            log.info("modify originFiles: {}", originFiles);
 
+            BoardDto modifiedBoardDto = boardService.modify(boardDto, uploadFiles, changeFiles, originFiles, customUserDetails.getMember());
 
+            responseDto.setItem(modifiedBoardDto);
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
 
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            log.error("modify error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
 
 }
+
+

@@ -9,7 +9,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface BoardService {
-    Page<BoardDto> post(BoardDto boardDto, MultipartFile[] uploadFiles, Member member, Pageable pageable);
+    Page<BoardDto> post(BoardDto boardDto, MultipartFile[] uploadFiles,
+                        Member member, Pageable pageable);
 
     Page<BoardDto> findAll(String searchCondition, String searchKeyword, Pageable pageable);
+
+    BoardDto findById(Long id);
+
+    void deleteById(Long id);
+
+    BoardDto modify(BoardDto boardDto, MultipartFile[] uploadFiles, MultipartFile[] changeFiles, String originFiles, Member member);
 }
