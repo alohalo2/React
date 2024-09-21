@@ -2,18 +2,16 @@ package com.bit.boardappbackend.controller;
 
 import com.bit.boardappbackend.dto.MemberDto;
 import com.bit.boardappbackend.dto.ResponseDto;
-import com.bit.boardappbackend.entity.Member;
 import com.bit.boardappbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -92,11 +90,11 @@ public class MemberController {
 
         try {
             log.info("login memberDto: {}", memberDto.toString());
-            MemberDto loginedMemberDto = memberService.login(memberDto);
+            MemberDto loginMemberDto = memberService.login(memberDto);
 
             responseDto.setStatusCode(HttpStatus.OK.value());
             responseDto.setStatusMessage("ok");
-            responseDto.setItem(loginedMemberDto);
+            responseDto.setItem(loginMemberDto);
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
@@ -107,11 +105,31 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout() {
+        ResponseDto<Map<String, String>> responseDto = new ResponseDto<>();
 
+        try {
+            Map<String, String> logoutMsgMap = new HashMap<>();
 
+            SecurityContext securityContext = SecurityContextHolder.getContext();
+            securityContext.setAuthentication(null);
+            SecurityContextHolder.setContext(securityContext);
 
+            logoutMsgMap.put("logoutMsg", "logout success");
 
+            responseDto.setStatusCode(200);
+            responseDto.setStatusMessage("ok");
+            responseDto.setItem(logoutMsgMap);
 
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            log.error("logout error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
 
 
 

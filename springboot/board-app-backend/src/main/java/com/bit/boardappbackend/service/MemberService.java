@@ -2,7 +2,6 @@ package com.bit.boardappbackend.service;
 
 import com.bit.boardappbackend.dto.MemberDto;
 
-import java.util.List;
 import java.util.Map;
 
 public interface MemberService {

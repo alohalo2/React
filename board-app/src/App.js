@@ -7,6 +7,9 @@ import { store } from './store/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import Login from './pages/Login';
+import Post from './pages/Post';
+import BoardList from './pages/BoardList';
+import Board from './pages/Board';
 
 function App() {
   const persiststore = persistStore(store);
@@ -19,6 +22,9 @@ function App() {
             <Route index element={<Home/>}/>
             <Route path='/join' element={<Join/>}/>
             <Route path='/login' element={<Login/>}/>
+            <Route path='/post' element={<Post/>}/>
+            <Route path='/board-list' element={<BoardList/>}/>
+            <Route path='/board/:id' element={<Board/>}/>
           </Route>
         </Routes>
       </PersistGate>

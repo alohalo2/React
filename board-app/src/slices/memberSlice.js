@@ -1,6 +1,7 @@
 import {createSlice, isAction} from '@reduxjs/toolkit';
 import { join } from '../apis/memberApis';
 import { login } from '../apis/memberApis';
+import { logout } from '../apis/memberApis';
 
 const memberSlice = createSlice({
     name: 'members',
@@ -48,6 +49,22 @@ const memberSlice = createSlice({
                 return state;
             }
 
+            return state;
+        });
+
+        builder.addCase(logout.fulfilled, (state, action) => {
+            alert("로그아웃 완료");
+            sessionStorage.removeItem("ACCESS_TOKEN");
+            
+            return {
+                ...state,
+                isLogin: false,
+                id: 0,
+                username: '',
+            }
+        });
+        builder.addCase(logout.rejected, (state, action) => {
+            alert("에러가 발생했습니다.");
             return state;
         });
     }

@@ -10,9 +10,11 @@ import {
     REGISTER
 } from 'redux-persist';
 import storageSession from 'redux-persist/es/storage/session';
+import boardSlice from '../slices/boardSlice';
 
 const reducers = combineReducers({
     memberSlice,
+    boardSlice
 });
 
 const persistConfig = {

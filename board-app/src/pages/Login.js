@@ -23,10 +23,15 @@ const Login = () => {
     const handleLogin = useCallback((e) => {
         e.preventDefault();
 
-        dispatch(login(loginForm));
+        // dispatch의 비동기 처리가 제대로 완료됐을 때는 then 메소드의 state에
+        // action 객체가 하나 넘어오고 에러가 발생했을 때는 에러 action 객체가 담긴다. 
+        dispatch(login(loginForm)).then((action) => {
+            if(action.type == 'members/login/fulfilled') {
+                navi("/");
+            }
+        });
 
-        navi('/');
-    }, [loginForm, dispatch]);
+    }, [loginForm, dispatch, navi]);
 
   return (
     <Container component='div' maxWidth='xs' style={{marginTop: '8%'}}>

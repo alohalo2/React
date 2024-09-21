@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -39,12 +37,12 @@ public class MemberServiceImpl implements MemberService {
     public Map<String, String> nicknameCheck(String nickname) {
         Map<String, String> nicknameCheckMsgMap = new HashMap<>();
 
-        long nicknameCheck = memberRepository.countByNickname(nickname); // long인 이유는 countByNickname이 count로 오기 때문이다.
+        long nicknameCheck = memberRepository.countByNickname(nickname);
 
         if(nicknameCheck == 0)
-            nicknameCheckMsgMap.put("nicknameCheckMsg", "available username");
+            nicknameCheckMsgMap.put("nicknameCheckMsg", "available nickname");
         else
-            nicknameCheckMsgMap.put("nicknameCheckMsg", "invalid username");
+            nicknameCheckMsgMap.put("nicknameCheckMsg", "invalid nickname");
 
         return nicknameCheckMsgMap;
     }
@@ -64,20 +62,18 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDto login(MemberDto memberDto) {
         Member member = memberRepository.findByUsername(memberDto.getUsername()).orElseThrow(
-                () -> new RuntimeException("uesrname not exist")
+                () -> new RuntimeException("username not exist")
         );
 
         if(!passwordEncoder.matches(memberDto.getPassword(), member.getPassword())) {
             throw new RuntimeException("wrong password");
         }
 
-        MemberDto loginedMemberDto = member.toDto();
+        MemberDto loginMemberDto = member.toDto();
 
-        loginedMemberDto.setPassword("");
-        loginedMemberDto.setToken(jwtProvider.createJwt(member));
+        loginMemberDto.setPassword("");
+        loginMemberDto.setToken(jwtProvider.createJwt(member));
 
-        return loginedMemberDto;
+        return loginMemberDto;
     }
-
-
 }
