@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
-@Slf4j
+@Slf4j // log를 사용하기 위한 어노테이션
 public class MemberController {
     private final MemberService memberService;
 
